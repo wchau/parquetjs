@@ -1,5 +1,5 @@
 {
-  "name": "parquetjs",
+  "name": "@william.chau/parquetjs-lite",
   "description": "fully asynchronous, pure JavaScript implementation of the Parquet file format",
   "main": "parquet.js",
   "version": "0.8.0",
@@ -33,5 +33,13 @@
   },
   "engines": {
     "node": ">=7.6"
+  },
+  "bugs": {
+    "url": "https://github.com/ironSource/parquetjs/issues"
+  },
+  "directories": {
+    "example": "examples",
+    "lib": "lib",
+    "test": "test"
   }
 }

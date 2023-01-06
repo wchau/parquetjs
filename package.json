@@ -15,9 +15,12 @@
     "url": "git://github.com/wchau/parquetjs.git"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
     "int53": "^0.2.4",
     "node-int64": "^0.3.3",
+    "pako": "^2.1.0",
     "snappyjs": "^0.6.0",
+    "util": "^0.12.5",
     "varint": "^5.0.0"
   },
   "devDependencies": {

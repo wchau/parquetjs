@@ -1,8 +1,8 @@
 {
-  "name": "@william.chau/parquetjs-lite",
-  "description": "fully asynchronous, pure JavaScript implementation of the Parquet file format",
+  "name": "parquetjs-lite-gas",
+  "description": "fully asynchronous, pure JavaScript implementation of the Parquet file format for Google Apps Script",
   "main": "parquet.js",
-  "version": "0.8.9",
+  "version": "0.1.0",
   "homepage": "https://github.com/wchau/parquetjs",
   "author": "ironSource <npm@ironsrc.com>",
   "license": "MIT",

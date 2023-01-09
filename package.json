@@ -2,7 +2,7 @@
   "name": "parquetjs-lite-gas",
   "description": "fully asynchronous, pure JavaScript implementation of the Parquet file format for Google Apps Script",
   "main": "parquet.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/wchau/parquetjs",
   "author": "ironSource <npm@ironsrc.com>",
   "license": "MIT",
@@ -17,7 +17,7 @@
   "dependencies": {
     "buffer": "^6.0.3",
     "int53": "^0.2.4",
-    "node-int64": "^0.3.3",
+    "node-int64-gas": "^0.4.0",
     "pako": "^2.1.0",
     "snappyjs": "^0.6.0",
     "util": "^0.12.5",

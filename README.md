@@ -22,20 +22,20 @@ Installation
 ------------
 
 Package it with https://github.com/mahaker/esbuild-gas-plugin and add the following
-to `build.js`:
+to build parameters in `build.js`:
 
-```
+``` js
 define: {
   // util.js
   'process.env.NODE_DEBUG': false,
   // int53
-  'console.assert': 'assert
+  'console.assert': 'assert'
 }
 ```
 
 and expose a global assert function in GAS:
 
-```
+``` js
 function assert(condition, message) {
   if (!condition) {
     if (!message) {

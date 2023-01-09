@@ -18,7 +18,7 @@
  */
 
 var log = require('./log');
-var Int64 = require('node-int64');
+var Int64 = require('node-int64-gas');
 var Thrift = require('./thrift');
 var Type = Thrift.Type;
 

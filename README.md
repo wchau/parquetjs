@@ -22,7 +22,7 @@ Installation
 ------------
 
 Package it with https://github.com/mahaker/esbuild-gas-plugin and add the following
-to build parameters in `build.js`:
+to the build parameters in `build.js`:
 
 ``` js
 define: {

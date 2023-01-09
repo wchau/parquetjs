@@ -11,6 +11,8 @@ the [Parquet](https://parquet.apache.org/) file format. The implementation confo
 [Parquet specification](https://github.com/apache/parquet-format) and is tested
 for compatibility with Apache's Java [reference implementation](https://github.com/apache/parquet-mr).
 
+This is a lite read-only version that is modified to work with Google Apps Script through UrlFetchApp.
+
 **What is Parquet?**: Parquet is a column-oriented file format; it allows you to
 write a large amount of structured data to a file, compress it and then read parts
 of it back out efficiently. The Parquet format is based on [Google's Dremel paper](https://www.google.co.nz/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&uact=8&ved=0ahUKEwj_tJelpv3UAhUCm5QKHfJODhUQFggsMAE&url=http%3A%2F%2Fwww.vldb.org%2Fpvldb%2Fvldb2010%2Fpapers%2FR29.pdf&usg=AFQjCNGyMk3_JltVZjMahP6LPmqMzYdCkw).
@@ -19,59 +21,32 @@ of it back out efficiently. The Parquet format is based on [Google's Dremel pape
 Installation
 ------------
 
-To use parquet.js with node.js, install it using npm:
+Package it with https://github.com/mahaker/esbuild-gas-plugin and add the following
+to `build.js`:
 
 ```
-  $ npm install parquetjs-lite
+define: {
+  // util.js
+  'process.env.NODE_DEBUG': false,
+  // int53
+  'console.assert': 'assert
+}
+```
+
+and expose a global assert function in GAS:
+
+```
+function assert(condition, message) {
+  if (!condition) {
+    if (!message) {
+      throw Error("Assertion failed");
+    }
+    throw Error(message);
+  }
+}
 ```
 
 _parquet.js requires node.js >= 7.6.0_
-
-
-Usage: Writing files
---------------------
-
-Once you have installed the parquet.js library, you can import it as a single
-module:
-
-``` js
-var parquet = require('parquetjs-lite');
-```
-
-Parquet files have a strict schema, similar to tables in a SQL database. So,
-in order to produce a Parquet file we first need to declare a new schema. Here
-is a simple example that shows how to instantiate a `ParquetSchema` object:
-
-``` js
-// declare a schema for the `fruits` table
-var schema = new parquet.ParquetSchema({
-  name: { type: 'UTF8' },
-  quantity: { type: 'INT64' },
-  price: { type: 'DOUBLE' },
-  date: { type: 'TIMESTAMP_MILLIS' },
-  in_stock: { type: 'BOOLEAN' }
-});
-```
-
-Note that the Parquet schema supports nesting, so you can store complex, arbitrarily
-nested records into a single row (more on that later) while still maintaining good
-compression.
-
-Once we have a schema, we can create a `ParquetWriter` object. The writer will
-take input rows as JSON objects, convert them to the Parquet format and store
-them on disk. 
-
-``` js
-// create new ParquetWriter that writes to 'fruits.parquet`
-var writer = await parquet.ParquetWriter.openFile(schema, 'fruits.parquet');
-
-// append a few rows to the file
-await writer.appendRow({name: 'apples', quantity: 10, price: 2.5, date: new Date(), in_stock: true});
-await writer.appendRow({name: 'oranges', quantity: 10, price: 2.5, date: new Date(), in_stock: true});
-```
-
-Once we are finished adding rows to the file, we have to tell the writer object
-to flush the metadata to disk and close the file by calling the `close()` method:
 
 
 Usage: Reading files
@@ -85,18 +60,15 @@ You may open more than one cursor and use them concurrently. All cursors become
 invalid once close() is called on
 the reader object.
 
+Parquet files can be read from a url without having to download the whole file.
+You will have to supply the UrlFetchApp library as a first argument,
+the URL as the second parameter,
+request parameters as a third argument,
+and reader options as a fourth argument to the function `parquetReader.openUrl`.
+
 ``` js
-// create new ParquetReader that reads from 'fruits.parquet`
-let reader = await parquet.ParquetReader.openFile('fruits.parquet');
-
-// create a new cursor
-let cursor = reader.getCursor();
-
-// read all records from the file and print them
-let record = null;
-while (record = await cursor.next()) {
-  console.log(record);
-}
+const request = require('request');
+let reader = await parquet.ParquetReader.openUrl(UrlFetchApp,'https://domain/fruits.parquet');
 ```
 
 When creating a cursor, you can optionally request that only a subset of the
@@ -112,38 +84,6 @@ avoid leaking file descriptors.
 
 ``` js
 await reader.close();
-```
-
-### Reading data from a url
-
-Parquet files can be read from a url without having to download the whole file.
-You will have to supply the request library as a first argument and the request parameters
-as a second argument to the function `parquetReader.openUrl`.
-
-``` js
-const request = require('request');
-let reader = await parquet.ParquetReader.openUrl(request,'https://domain/fruits.parquet');
-```
-
-### Reading data from S3
-
-Parquet files can be read from an S3 object without having to download the whole file.
-You will have to supply the aws-sdk client as first argument and the bucket/key information 
-as second argument to the function `parquetReader.openS3`.
-
-``` js
-const AWS = require('aws-sdk');
-const client = new AWS.S3({
-  accessKeyId: 'xxxxxxxxxxx',
-  secretAccessKey: 'xxxxxxxxxxx'
-});
-
-const params = {
-  Bucket: 'xxxxxxxxxxx',
-  Key: 'xxxxxxxxxxx'
-};
-
-let reader = await parquet.ParquetReader.openS3(client,params);
 ```
 
 ### Reading data from a buffer
